@@ -1,0 +1,8 @@
+make
+gcc
+g++
+cmake
+freeglut3-dev
+curl
+libcurl4-gnutls-dev
+asciidoc

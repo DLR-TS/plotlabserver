@@ -1,0 +1,7 @@
+plotlablib/build
+plotlabserver/build
+plotlabserver/server/include/stb_image.h
+libzmq/build
+**/build
+*CATKIN_IGNORE*
+.log

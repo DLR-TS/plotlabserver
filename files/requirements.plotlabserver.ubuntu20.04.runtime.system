@@ -1,0 +1,6 @@
+#Runtime requirements for plotlab server
+freeglut3
+libopengl0
+libglu1-mesa
+libcurl3-gnutls
+x11-apps

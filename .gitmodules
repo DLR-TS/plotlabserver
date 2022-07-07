@@ -1,0 +1,8 @@
+[submodule "stb"]
+	path = stb
+	url = https://github.com/nothings/stb.git
+	shallow = true
+[submodule "plotlablib"]
+	path = plotlablib
+	url = git@github.com:DLR-TS/plotlablib.git
+	branch = master

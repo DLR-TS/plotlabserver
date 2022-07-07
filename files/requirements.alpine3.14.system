@@ -1,0 +1,11 @@
+make
+cmake
+freeglut
+freeglut-dev
+curl
+libcurl
+curl-dev
+asciidoc
+bash
+gcc
+g++
