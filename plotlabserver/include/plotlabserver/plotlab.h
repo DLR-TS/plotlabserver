@@ -171,6 +171,8 @@ class CircleStrip : public PlotObject {
 
 class Figure {
  private:
+  float FillColor[4];
+  float LineColor[4];
   class PlotObjectSet {
    public:
     pthread_mutex_t mut;
@@ -178,6 +180,7 @@ class Figure {
     std::unordered_map<std::string, PlotObject *> deferredObjects;
     double minx, miny, minz, maxx, maxy, maxz;
     bool fixed_limits;
+
     PlotObjectSet() {
       minx = 9e6;
       maxx = -9e6;

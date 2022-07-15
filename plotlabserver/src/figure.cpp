@@ -73,6 +73,10 @@ Figure::Figure(const char *name, unsigned int id)
   // TexturePlot(&textureCache,"Container.jpg",0,0,-1,3.14*0.25,1,2));
   // this->add("testVehicle",new
   // TexturePlot(&textureCache,"testVehicle.png",0,0,0,3.14*0.25,1,2));
+
+  //darmode
+  FillColor[0] = 0.0f;FillColor[1] = 0.0f;FillColor[2] = 0.0f;FillColor[3] = 1.0f;
+  LineColor[0] = 1.0f;LineColor[1] = 1.0f;LineColor[2] = 1.0f;LineColor[3] = 0.5f;
 }
 
 void Figure::createGlutFigure(const char *name, unsigned int id) {
@@ -242,7 +246,7 @@ void Figure::display(void) {
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glEnable(GL_ALPHA_TEST);
   glAlphaFunc(GL_NOTEQUAL, 0.0);
-  glClearColor(1.0, 1.0, 1.0, 0.0);
+  glClearColor(FillColor[0], FillColor[1], FillColor[2],FillColor[3]);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -378,7 +382,7 @@ void Figure::display(void) {
   // plot the grid
   if (showGrid) {
     glLineWidth(1.0f);
-    glColor4f(0.9f, 0.9f, 0.9f, 1.0f);
+    glColor4f(LineColor[0],LineColor[1],LineColor[2],LineColor[3]);
     // glColor4f(0.f,0.f,0.f,0.5f);
     glBegin(GL_LINES);
     for (int i = 1; i < stepsX_real; i++) {
@@ -399,7 +403,7 @@ void Figure::display(void) {
   // plot the axis (box)
   if (showAxis) {
     glLineWidth(1);
-    glColor4f(0, 0, 0, 1);
+    glColor4f(LineColor[0],LineColor[1],LineColor[2],LineColor[3]);
     glBegin(GL_LINE_STRIP);
     glVertex3d(minx_grid - xmid, miny_grid - ymid, 0);
     glVertex3d(maxx_grid - xmid, miny_grid - ymid, 0);
@@ -411,7 +415,6 @@ void Figure::display(void) {
   // major grid markers on axis
   if (showAxis) {
     glLineWidth(1);
-    glColor4f(0, 0, 0, 1);
     double lx = axis.tickSizePx / sx2px;
     double ly = axis.tickSizePx / sy2px;
 
@@ -437,6 +440,7 @@ void Figure::display(void) {
     }
 
     glBegin(GL_LINES);
+    glColor4f(LineColor[0],LineColor[1],LineColor[2],LineColor[3]);
     for (int i = 0; i < stepsX_real + 0.01; i++) {
       // south
       glVertex3d(minx_grid + xgridWidth * (double)i - xmid,
@@ -498,7 +502,7 @@ void Figure::plotLabel(const char *s, int length, double x, double y, double sx,
   if (halign == 0) xoff = -(wx * (double)length) / 2.0;
   if (halign < 0) xoff = 0;
   if (halign > 0) xoff = -(wx * (double)length);
-  glColor4f(0, 0, 0, 1);
+  glColor4f(LineColor[0],LineColor[1],LineColor[2],LineColor[3]);
   for (int i = 0; i < length; i++) {
     glRasterPos2d(x + wx * i + xoff, y + yoff);
     glutBitmapCharacter(GLUT_BITMAP_8_BY_13, s[i]);
