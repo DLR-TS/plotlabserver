@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+set -e
+
+function echoerr { echo "$@" >&2; exit 1;}
+SCRIPT_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+cd "${SCRIPT_DIRECTORY}" 
+
 PLOTLAB_SERVER_LOG=/var/log/plotlab/plotlabserver.log
 
 FFMPEG_FRAMERATE=10

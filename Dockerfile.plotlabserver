@@ -16,12 +16,12 @@ ENV VIRTUAL_DISPLAY_RESOLUTION=${VIRTUAL_DISPLAY_RESOLUTION}
 ARG VIRTUAL_DISPLAY_ID=":99"
 ENV VIRTUAL_DISPLAY_ID=${VIRTUAL_DISPLAY_ID}
 
-ARG REQUIREMENTS_FILE="requirements.plotlabserver.ubuntu20.04.runtime.system"
+ARG REQUIREMENTS_FILE="files/requirements.plotlabserver.ubuntu20.04.runtime.system"
 
 
 COPY --from=plotlabserver_build /tmp/plotlabserver /tmp/plotlabserver
 
-WORKDIR /tmp/plotlabserver/files
+WORKDIR /tmp/plotlabserver
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y $(sed '/^#/d' ${REQUIREMENTS_FILE} | sed '/^$/d') && \
