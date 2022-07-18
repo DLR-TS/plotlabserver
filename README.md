@@ -23,10 +23,11 @@
 
 clone project:
 ```sh
-git clone --recurse-submodules git@gitlab.dlr.de:csa/plotlab.git
+git clone --recurse-submodules -j8 git@github.com:DLR-TS/plotlabserver.git
 ```
 or if you have already cloned the project:
 ```sh
+cd plotlabserver
 git submodules init
 git submodules update
 ```
@@ -35,9 +36,9 @@ git submodules update
 
 run: 
 ```sh
-make
+make up
 ```
 
 ## Artifacts
 
-all artifacts will be in lib/build, server/build, and libzmq/build
+all build artifacts will be avalable at plotlabserver/build
