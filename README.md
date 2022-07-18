@@ -11,9 +11,10 @@
 ********************************************************************************
 -->
 # PlotLab is yet another plotting tool...
-* [lib](lib) contains a client library to send plot commands to a plot (server)[server].
-* [server](server) contains a stand-alone, system-independent c++/OpenGL application, which controls several plot windows and receives plot commands from clients.
-* [libzmq](libzmq) contains docker file to build libzmq.
+
+* [plotlabserver](plotlabserver) contains a stand-alone, system-independent c++/OpenGL application, which controls several plot windows and receives plot commands from clients.
+
+This project proveds a docker context to build and run plotlabserver.
 
 ## Requirements
 * docker
