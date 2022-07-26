@@ -2,7 +2,7 @@
 
 **.git
 plotlabserver/build
-plotlablib/external/
+plotlablib/external
 **/build
 **.log
 docker-compose.yaml
