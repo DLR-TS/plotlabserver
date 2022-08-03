@@ -43,12 +43,19 @@ all: clean build
 up: ## Starts plotlabserver instance
 	make start_plotlabserver
 
+.PHONY: up-detached
+up-detached: ## Starts plotlabserver instance in detached mode
+	make start_plotlabserver_detached
+
+
 .PHONY: down 
 down: ## Stops plotlabserver instance
 	make stop_plotlabserver
+	docker compose rm -f
 
 .PHONY: clean 
 clean: set_env
+	docker compose rm -f
 	cd plotlablib && \
     make clean
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
@@ -67,31 +74,23 @@ build: set_env
 	mkdir -p "${ROOT_DIR}/tmp/${PROJECT}"
 	docker cp $$(docker create --rm $(shell echo ${TAG} | tr A-Z a-z)):/tmp/${PROJECT}/${PROJECT}/build ${ROOT_DIR}/${PROJECT}
 
-.PHONY: build_plotlabserver
-
-
-
 .PHONY: stop_plotlabserver 
 stop_plotlabserver:
 	docker compose down
+	docker compose rm -f
 	docker stop plotlabserver 2> /dev/null || true
 
 .PHONY: start_plotlabserver 
 start_plotlabserver: stop_plotlabserver
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
-	xhost + 1> /dev/null && docker compose up plotlabserver; xhost - 1> /dev/null
-
-.PHONY: start_plotlabserver_headless 
-start_plotlabserver_headless:
-	docker compose build
-	docker compose up plotlabserver_headless
+	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null
 
 .PHONY: start_plotlabserver_detached 
-start_plotlabserver_detached: stop_plotlab_server
+start_plotlabserver_detached: stop_plotlabserver
 	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || make build
 	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || make build
-	xhost + 1> /dev/null && docker compose up -d &
+	xhost + 1> /dev/null && docker compose up --force-recreate -d &
 
 .PHONY: build_plotlabserver 
 build_plotlabserver:
