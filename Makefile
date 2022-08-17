@@ -83,13 +83,13 @@ stop_plotlabserver:
 .PHONY: start_plotlabserver 
 start_plotlabserver: stop_plotlabserver
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
-	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
+	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
 	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null
 
 .PHONY: start_plotlabserver_detached 
 start_plotlabserver_detached: stop_plotlabserver
-	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || make build
-	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || make build
+	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build_
+	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
 	xhost + 1> /dev/null && docker compose up --force-recreate -d &
 
 .PHONY: build_plotlabserver 
