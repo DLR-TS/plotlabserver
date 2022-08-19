@@ -6,24 +6,25 @@ function echoerr { echo "$@" >&2; exit 1;}
 SCRIPT_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 cd "${SCRIPT_DIRECTORY}/.."
-PLOTLAB_SERVER_BINARY_DIRECTORY="$(realpath plotlabserver/build)"
+PLOTLABSERVER_BINARY_DIRECTORY="$(realpath plotlabserver/build)"
 
-bash "${SCRIPT_DIRECTORY}/plotlab_server_plot_recorder.sh" >> /var/log/plotlab/plotlab_server_plot_recorder.log 2>&1 &
+bash "${SCRIPT_DIRECTORY}/plotlabserver_plot_recorder.sh" >> /var/log/plotlab/plotlabserver_plot_recorder.log 2>&1 &
 
 echo "Plotlab server DISPLAY_MODE: ${DISPLAY_MODE}"
 echo "  Possible display modes: native, window_manager, headless"
 echo "    To change the display mode modify the DISPLAY_MODE environmental variable in the docker-compose.yaml"
 echo "    DISPLAY_MODE descriptions: "
-echo "        native: plotlab windows will be displaed as native windows within the host system window manager (does not support video recording)" 
-echo "        window_manager: plotlab windows will be displaed within a nested i3 window manager (supports video recording)" 
-echo "        headless: plotlab server windows will be displayed on a virtual xvfb display suitable for headless host systems (supports video recording)" 
+echo "        native: plotlabserver windows will be displayed as native windows within the host system window manager (does not support video recording)" 
+echo "        window_manager: plotlabserver windows will be displayed within a nested i3 window manager (supports video recording)" 
+echo "        headless: plotlabserver windows will be displayed on a virtual xvfb display suitable for headless host systems (supports video recording)" 
 echo ""
 
-cd "${PLOTLAB_SERVER_BINARY_DIRECTORY}"
+cd "${PLOTLABSERVER_BINARY_DIRECTORY}"
 
 mkdir -p /var/log/plotlab/
 touch /var/log/plotlab/i3.log
 touch /var/log/plotlab/plotlabserver.log
+touch /var/log/plotlab/xvfb.log
 
 if [ "$DISPLAY_MODE" != "native" ] && [ "${DISPLAY_MODE}" != "window_manager" ] && [ "${DISPLAY_MODE}" != "headless" ]; then
   echoerr "ERROR: Unsupported display mode: ${DISPLAY_MODE}."
@@ -48,7 +49,7 @@ fi
 if [[ "${DISPLAY_MODE}" == "headless" ]]; then
   echo "  running in headless mode..."
   Xvfb "${VIRTUAL_DISPLAY_ID}" -screen 0 "${VIRTUAL_DISPLAY_RESOLUTION}x16" \
-                             -nolisten tcp >> "/var/log/plotlab/xvfb.log" 2>&1 &
+                               -nolisten tcp >> "/var/log/plotlab/xvfb.log" 2>&1 &
   sleep 1s
   DISPLAY=${VIRTUAL_DISPLAY_ID} i3 > /var/log/plotlab/i3.log 2>&1 &
   sleep 1s
@@ -62,3 +63,4 @@ if [[ "${DISPLAY_MODE}" == "native" ]]; then
   echo "  running in native mode..."
   ./plotlabserver 2>&1 | tee /var/log/plotlab/plotlabserver.log
 fi
+

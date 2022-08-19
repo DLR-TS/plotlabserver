@@ -7,7 +7,12 @@ MAKEFLAGS += --no-print-directory
 DOCKER_BUILDKIT?=1
 DOCKER_CONFIG?=
 
-.DEFAULT_GOAL := all
+DOCKER_GID := $(shell getent group | grep docker | cut -d":" -f3)
+USER := $(shell whoami)
+UID := $(shell id -u)
+GID := $(shell id -g)
+
+.DEFAULT_GOAL := help
 
 STB_DIRECTORY = "${ROOT_DIR}/stb"
 
@@ -39,12 +44,12 @@ set_env:
 .PHONY: all 
 all: clean build
 
-.PHONY: up
-up: ## Starts plotlabserver instance
+.PHONY: up 
+up: ## Starts plotlabserver instance, interactive
 	make start_plotlabserver
 
 .PHONY: up-detached
-up-detached: ## Starts plotlabserver instance in detached mode
+up-detached: ## Starts plotlabserver instance in detached mode, non-interactive
 	make start_plotlabserver_detached
 
 
@@ -61,9 +66,10 @@ clean: set_env
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
 	docker rm $$(docker ps -a -q --filter "ancestor=${TAG}") 2> /dev/null || true
 	docker rmi $$(docker images -q ${TAG}) 2> /dev/null || true
+	docker rmi $$(docker images -q ${PLOTLABSERVER_TAG}) 2> /dev/null || true
 
 .PHONY: build
-build: set_env
+build: set_env clean
 	rm -rf ${ROOT_DIR}/${PROJECT}/build
 	cd plotlablib && \
     make
@@ -79,17 +85,21 @@ stop_plotlabserver:
 	docker compose down
 	docker compose rm -f
 	docker stop plotlabserver 2> /dev/null || true
+	docker rm plotlabserver 2> /dev/null || true
 
 .PHONY: start_plotlabserver 
 start_plotlabserver: stop_plotlabserver
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
+	mkdir -p .log
+	docker compose rm -f
 	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null
 
 .PHONY: start_plotlabserver_detached 
 start_plotlabserver_detached: stop_plotlabserver
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build_
 	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
+	mkdir -p .log
 	xhost + 1> /dev/null && docker compose up --force-recreate -d &
 
 .PHONY: build_plotlabserver 
@@ -100,7 +110,7 @@ build_plotlabserver:
 	bash build.sh
 
 .PHONY: view_plotlab_server_logs 
-view_plotlabserver_logs:
+view_plotlabserver_logs: ## View plotlabserver logs in detached mode
 	docker compose logs -f plotlabserver
 
 .PHONY: docker_clean 
