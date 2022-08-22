@@ -90,7 +90,7 @@ while true; do
                    -preset ultrafast \
                    -f "${FFMPEG_VIDEO_CONTAINER_FORMAT}" \
                    -vcodec "${FFMPEG_VIDEO_CODEC}" \
-                   "${VIDEO_FILE}"
+                   -y "${VIDEO_FILE}"
             set +x
             } > "${FFMPEG_LOG_FILE}" 2>&1 &
             echo "DONE"

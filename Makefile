@@ -59,7 +59,7 @@ down: ## Stops plotlabserver instance
 	docker compose rm -f
 
 .PHONY: clean 
-clean: set_env
+clean: set_env ## Clean plotlabserver docker images and delete build artifacts
 	docker compose rm -f
 	cd plotlablib && \
     make clean
@@ -67,6 +67,11 @@ clean: set_env
 	docker rm $$(docker ps -a -q --filter "ancestor=${TAG}") 2> /dev/null || true
 	docker rmi $$(docker images -q ${TAG}) 2> /dev/null || true
 	docker rmi $$(docker images -q ${PLOTLABSERVER_TAG}) 2> /dev/null || true
+
+.PHONY: build_fast
+build_fast: ## Build plotlabserver docker context only if it has not already been built
+	[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
+	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
 
 .PHONY: build
 build: set_env clean
@@ -88,17 +93,13 @@ stop_plotlabserver:
 	docker rm plotlabserver 2> /dev/null || true
 
 .PHONY: start_plotlabserver 
-start_plotlabserver: stop_plotlabserver
-	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
-	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
+start_plotlabserver: stop_plotlabserver build_fast
 	mkdir -p .log
 	docker compose rm -f
 	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null
 
 .PHONY: start_plotlabserver_detached 
-start_plotlabserver_detached: stop_plotlabserver
-	@[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build_
-	@[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
+start_plotlabserver_detached: stop_plotlabserver build_fast
 	mkdir -p .log
 	xhost + 1> /dev/null && docker compose up --force-recreate -d &
 
