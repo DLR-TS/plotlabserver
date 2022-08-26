@@ -69,7 +69,7 @@ clean: set_env ## Clean plotlabserver docker images and delete build artifacts
 	docker rmi $$(docker images -q ${PLOTLABSERVER_TAG}) 2> /dev/null || true
 
 .PHONY: build_fast
-build_fast: ## Build plotlabserver docker context only if it has not already been built
+build_fast: ## Build plotlabserver docker context only if it has not already been built. Will not attempt to rebuild.
 	[ -n "$$(docker images -q ${PLOTLABSERVER_BUILD_TAG})" ] || make build
 	[ -n "$$(docker images -q ${PLOTLABSERVER_TAG})" ] || docker compose build plotlabserver
 
@@ -82,7 +82,6 @@ build: set_env clean
                  --tag $(shell echo ${TAG} | tr A-Z a-z) \
 				 -f ${DOCKERFILE} \
                  --build-arg PROJECT=${PROJECT} .
-	mkdir -p "${ROOT_DIR}/tmp/${PROJECT}"
 	docker cp $$(docker create --rm $(shell echo ${TAG} | tr A-Z a-z)):/tmp/${PROJECT}/${PROJECT}/build ${ROOT_DIR}/${PROJECT}
 
 .PHONY: stop_plotlabserver 

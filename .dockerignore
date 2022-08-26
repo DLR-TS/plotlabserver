@@ -1,9 +1,8 @@
 **plotlabserver/stb_image.h
-
 **.git
 plotlabserver/build
-plotlablib/external
-**/build
+plotlablib/plotlablib/external
+plotlablib/plotlablib/build
 **.log
 docker-compose.yaml
 **.dockerignore

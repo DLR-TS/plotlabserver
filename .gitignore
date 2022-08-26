@@ -5,3 +5,5 @@ libzmq/build
 **/build
 *CATKIN_IGNORE*
 .log
+**.git
+stb

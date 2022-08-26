@@ -27,10 +27,6 @@ services:
       #- LIBGL_ALWAYS_SOFTWARE=1
       - UID=${UID}
       - GID=${GID}
-    ports:
-      - 12345:12345
-      - 12346:12346
-      - 12347:12347
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - .log:/var/log/plotlab
