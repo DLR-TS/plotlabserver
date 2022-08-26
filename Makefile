@@ -63,6 +63,7 @@ clean: set_env ## Clean plotlabserver docker images and delete build artifacts
 	docker compose rm -f
 	cd plotlablib && \
     make clean
+	rm -rf "${ROOT_DIR}/.log"
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
 	docker rm $$(docker ps -a -q --filter "ancestor=${TAG}") 2> /dev/null || true
 	docker rmi $$(docker images -q ${TAG}) 2> /dev/null || true
