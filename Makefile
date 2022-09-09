@@ -76,7 +76,7 @@ build_fast: ## Build plotlabserver docker context only if it has not already bee
 
 .PHONY: build
 build: set_env clean
-	rm -rf ${ROOT_DIR}/${PROJECT}/build
+	rm -rf "${ROOT_DIR}/${PROJECT}/build"
 	cd plotlablib && \
     make
 	docker build --network host \
