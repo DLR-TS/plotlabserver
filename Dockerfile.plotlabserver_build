@@ -1,9 +1,10 @@
 ARG PROJECT
 
-FROM plotlablib:latest as plotlablib
+ARG PLOTLABLIB_TAG="latest"
+
+FROM plotlablib:${PLOTLABLIB_TAG} AS plotlablib
 FROM libzmq:latest as libzmq
 FROM cppzmq:latest as cppzmq
-
 
 
 FROM ubuntu:20.04 as plotlabserver_requirements_base
