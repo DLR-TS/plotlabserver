@@ -96,8 +96,8 @@ start_plotlabserver_detached: stop_plotlabserver build_fast
 	mkdir -p .log
 	xhost + 1> /dev/null && docker compose up --rm --force-recreate -d &
 
-.PHONY: build_plotlabserver 
-build_plotlabserver:
+.PHONY: build_plotlabserver_compile 
+build_plotlabserver_compile:
 	@cd "${ROOT_DIR}/plotlabserver/include/plotlabserver" && \
 	ln -sf ../../../stb/stb_image.h stb_image.h
 	cd "${ROOT_DIR}/plotlabserver" && \

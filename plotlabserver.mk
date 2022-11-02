@@ -1,6 +1,6 @@
 # This Makefile contains useful targets that can be included in downstream projects.
 
-#ifndef plotlabserver_MAKEFILE_PATH
+ifndef plotlabserver_MAKEFILE_PATH
 
 MAKEFLAGS += --no-print-directory
 
@@ -49,4 +49,4 @@ image_plotlabserver: ## Returns the current docker image name for plotlabserver
 update_plotlabserver:
 	cd "${plotlabserver_MAKEFILE_PATH}" && git pull
 
-#endif
+endif
