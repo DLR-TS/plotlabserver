@@ -5,6 +5,7 @@ services:
     extends:
       file: plotlabserver.yaml
       service: plotlabserver
+    network_mode: "host"
     environment:
        - DISPLAY_MODE=${DISPLAY_MODE:-native}
       # - DISPLAY_MODE=${DISPLAY_MODE:-window_manager}
