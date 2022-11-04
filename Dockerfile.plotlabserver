@@ -3,13 +3,12 @@
 # This dockerfile contains the runtime context for plotlabserver
 #   with integration into x11 for graphical applications
 
-
-FROM plotlabserver_build:latest as plotlabserver_build
-
+ARG PLOTLABSERVER_TAG=latest
 ARG USER=plotlabserver
 ARG UID
 ARG GID
 
+FROM plotlabserver_build:${PLOTLABSERVER_TAG} AS plotlabserver_build
 FROM ubuntu:20.04 as plotlabserver
 
 ENV DISPLAY_MODE=native

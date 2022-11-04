@@ -19,7 +19,6 @@ project(plotlabserver
         HOMEPAGE_URL "https://github.com/eclipse/adore/tree/master/plotlab/server"
 )
 
-
 #add_library(${PROJECT_NAME} INTERFACE)
 #add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 
@@ -35,13 +34,14 @@ include(GNUInstallDirs)
 set(stbimagepath ${CMAKE_CURRENT_SOURCE_DIR}/include/plotlabserver/)
 
 list(APPEND CMAKE_PREFIX_PATH "$ENV{CMAKE_PREFIX_PATH}")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../plotlablib/plotlablib/build/install")
-message("${CMAKE_CURRENT_SOURCE_DIR}")
+
+set(plotlablib_CMAKE_INSTALL_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../plotlablib/plotlablib/build/install")
+list(APPEND CMAKE_PREFIX_PATH "${plotlablib_CMAKE_INSTALL_PATH}")
 
 
 add_executable(plotlabserver)
 
-find_package(plotlablib REQUIRED)
+find_package(plotlablib CONFIG REQUIRED)
 
 find_package(Threads REQUIRED)
 find_package(GLUT REQUIRED)

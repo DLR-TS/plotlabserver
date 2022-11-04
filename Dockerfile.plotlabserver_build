@@ -1,9 +1,10 @@
 ARG PROJECT
 
-FROM plotlablib:latest as plotlablib
+ARG PLOTLABLIB_TAG="latest"
+
+FROM plotlablib:${PLOTLABLIB_TAG} AS plotlablib
 FROM libzmq:latest as libzmq
 FROM cppzmq:latest as cppzmq
-
 
 
 FROM ubuntu:20.04 as plotlabserver_requirements_base
@@ -24,6 +25,7 @@ RUN apt-get update && \
 COPY --from=plotlablib /tmp/plotlablib /tmp/plotlablib
 WORKDIR /tmp/plotlablib/plotlablib/build
 RUN cmake --install . --prefix /tmp/${PROJECT}/${PROJECT}/build/install 
+RUN cmake --install . && ldconfig
 
 COPY --from=libzmq /tmp/libzmq /tmp/libzmq
 WORKDIR /tmp/libzmq/build
@@ -42,7 +44,7 @@ COPY . /tmp/plotlabserver
 FROM plotlabserver_requirements_base AS plotlabserver_builder
 
 WORKDIR /tmp/${PROJECT}
-RUN make build_plotlabserver 
+RUN make build_plotlabserver_compile 
 
 
 #FROM alpine:3.14 AS plotlabserver_package

@@ -3,7 +3,7 @@ version: '3.5'
 services:
   plotlabserver:
     privileged: true
-    image: plotlabserver:latest
+    image: plotlabserver:${PLOTLABSERVER_TAG:-latest}
     container_name: plotlabserver
     hostname: plotlabserver
     user: ${UID}:${GID}
@@ -14,6 +14,8 @@ services:
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1001}
+        - PLOTLABSERVER_TAG=${PLOTLABSERVER_TAG:-latest}
+    network_mode: "host"
     ipc: "host"
     #entrypoint: sh -c 'xeyes'
     #entrypoint: sh -c '(xeyes &) && ./plotlabserver'
