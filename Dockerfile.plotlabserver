@@ -3,8 +3,6 @@
 # This dockerfile contains the runtime context for plotlabserver
 #   with integration into x11 for graphical applications
 
-
-
 ARG PLOTLABSERVER_TAG=latest
 ARG USER=plotlabserver
 ARG UID

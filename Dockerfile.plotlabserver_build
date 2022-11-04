@@ -25,6 +25,7 @@ RUN apt-get update && \
 COPY --from=plotlablib /tmp/plotlablib /tmp/plotlablib
 WORKDIR /tmp/plotlablib/plotlablib/build
 RUN cmake --install . --prefix /tmp/${PROJECT}/${PROJECT}/build/install 
+RUN cmake --install . && ldconfig
 
 COPY --from=libzmq /tmp/libzmq /tmp/libzmq
 WORKDIR /tmp/libzmq/build
