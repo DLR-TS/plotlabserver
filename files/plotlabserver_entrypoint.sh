@@ -41,7 +41,10 @@ if [[ "${DISPLAY_MODE}" == "window_manager" ]]; then
   xdotool search --name "Xephyr" set_window --name "Plotlab Server (ctrl+shift to capture and release mouse and keyboard)"
   DISPLAY="${VIRTUAL_DISPLAY_ID}" i3 > /var/log/plotlab/i3.log 2>&1 &
   sleep 1s
-  DISPLAY="${VIRTUAL_DISPLAY_ID}" ./plotlabserver > /var/log/plotlab/plotlabserver.log 2>&1 &
+  cd /var/log/plotlab
+  ln -s /tmp/plotlabserver/plotlabserver/images||true
+  mkdir -p cache && cd cache
+  DISPLAY="${VIRTUAL_DISPLAY_ID}" ${PLOTLABSERVER_BINARY_DIRECTORY}/plotlabserver > /var/log/plotlab/plotlabserver.log 2>&1 &
   tail -f /var/log/plotlab/plotlabserver.log
 fi
 
@@ -54,13 +57,19 @@ if [[ "${DISPLAY_MODE}" == "headless" ]]; then
   DISPLAY=${VIRTUAL_DISPLAY_ID} i3 > /var/log/plotlab/i3.log 2>&1 &
   sleep 1s
   DISPLAY=${VIRTUAL_DISPLAY_ID} unclutter -idle .1 &
-  DISPLAY=${VIRTUAL_DISPLAY_ID} ./plotlabserver > /var/log/plotlab/plotlabserver.log 2>&1 &
+  cd /var/log/plotlab
+  ln -s /tmp/plotlabserver/plotlabserver/images||true
+  mkdir -p cache && cd cache
+  DISPLAY=${VIRTUAL_DISPLAY_ID} ${PLOTLABSERVER_BINARY_DIRECTORY}/plotlabserver > /var/log/plotlab/plotlabserver.log 2>&1 &
   tail -f /var/log/plotlab/plotlabserver.log
 fi
 
 # native
 if [[ "${DISPLAY_MODE}" == "native" ]]; then
   echo "  running in native mode..."
-  ./plotlabserver 2>&1 | tee /var/log/plotlab/plotlabserver.log
+  cd /var/log/plotlab
+  ln -s /tmp/plotlabserver/plotlabserver/images||true
+  mkdir -p cache && cd cache
+  ${PLOTLABSERVER_BINARY_DIRECTORY}/plotlabserver 2>&1 | tee /var/log/plotlab/plotlabserver.log
 fi
 
