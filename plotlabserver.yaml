@@ -1,6 +1,6 @@
 version: '3.5'
 
-services:
+services: 
   plotlabserver:
     privileged: true
     image: plotlabserver:${PLOTLABSERVER_TAG:-latest}
@@ -30,5 +30,5 @@ services:
       - GID=${GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - .log:/var/log/plotlab
+      - .log:/var/log/plotlabserver
       

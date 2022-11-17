@@ -13,7 +13,6 @@ include plotlablib/make_gadgets/docker/docker-tools.mk
 include plotlablib/plotlablib.mk
 include plotlabserver.mk
 
-DOCKER_GID := $(shell getent group | grep docker | cut -d":" -f3)
 USER := $(shell whoami)
 UID := $(shell id -u)
 GID := $(shell id -g)
@@ -29,8 +28,8 @@ $(STB_DIRECTORY):
 
 .PHONY: set_env 
 set_env: 
-	$(eval PROJECT := ${PLOTLABSERVER_BUILD_PROJECT}) 
-	$(eval TAG := ${PLOTLABSERVER_BUILD_TAG})
+	$(eval PROJECT := ${PLOTLABSERVER_PROJECT}) 
+	$(eval TAG := ${PLOTLABSERVER_TAG})
 	$(eval DOCKERFILE := ${PLOTLABSERVER_BUILD_DOCKERFILE})
 
 .PHONY: all 
@@ -44,17 +43,14 @@ up: ## Starts plotlabserver instance, interactive
 up-detached: ## Starts plotlabserver instance in detached mode, non-interactive
 	make start_plotlabserver_detached
 
-
 .PHONY: down 
 down: ## Stops plotlabserver instance
 	make stop_plotlabserver
 	docker compose rm -f
 
 .PHONY: clean 
-clean: set_env ## Clean plotlabserver docker images and delete build artifacts
+clean: clean_plotlablib set_env ## Clean plotlabserver docker images and delete build artifacts
 	docker compose rm -f
-	cd plotlablib && \
-    make clean
 	rm -f "${ROOT_DIR}/plotlabserver/include/plotlabserver/stb_image.h"
 	rm -rf "${ROOT_DIR}/.log"
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
@@ -64,15 +60,15 @@ clean: set_env ## Clean plotlabserver docker images and delete build artifacts
 	docker rmi $$(docker images -q ${PROJECT}:${TAG}) --force 2> /dev/null || true
 
 .PHONY: build_fast
-build_fast: ## Build plotlabserver docker context only if it has not already been built. Will not attempt to rebuild.
-	[ -n "$$(docker images -q ${PROJECT}_build:${TAG})" ] || make build
-	[ -n "$$(docker images -q ${PROJECT}:${TAG})" ] || docker compose build plotlabserver
+build_fast: set_env ## Build plotlabserver docker context only if it has not already been built. Will not attempt to rebuild.
+	[ -n $$(docker images -q ${PROJECT}_build:${TAG}) ] && make build
+	[ -n $$(docker images -q ${PROJECT}:${TAG}) ] && docker compose build ${PROJECT}
 
 .PHONY: build
 build: set_env clean build_plotlablib
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
 	docker build --network host \
-				 -f ${DOCKERFILE} \
+                 -f ${DOCKERFILE} \
                  --tag ${PROJECT}_build:${TAG} \
                  --build-arg PROJECT=${PROJECT} \
                  --build-arg PLOTLABLIB_TAG=${PLOTLABLIB_TAG} .
@@ -94,7 +90,7 @@ start_plotlabserver: stop_plotlabserver build_fast
 .PHONY: start_plotlabserver_detached 
 start_plotlabserver_detached: stop_plotlabserver build_fast
 	mkdir -p .log
-	xhost + 1> /dev/null && docker compose up --rm --force-recreate -d &
+	xhost + 1> /dev/null && docker compose up --force-recreate -d &
 
 .PHONY: build_plotlabserver_compile 
 build_plotlabserver_compile:

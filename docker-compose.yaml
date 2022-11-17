@@ -6,6 +6,6 @@ services:
       file: plotlabserver.yaml
       service: plotlabserver
     environment:
-       - DISPLAY_MODE=${DISPLAY_MODE:-native}
+      - DISPLAY_MODE=${DISPLAY_MODE:-native}
       # - DISPLAY_MODE=${DISPLAY_MODE:-window_manager}
       # - DISPLAY_MODE=${DISPLAY_MODE:-headless}
