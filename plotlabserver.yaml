@@ -8,8 +8,9 @@ services:
     hostname: plotlabserver
     user: ${UID}:${GID}
     build:
-      context: .
+      context: ${PLOTLABSERVER_MAKEFILE_PATH}
       dockerfile: Dockerfile.plotlabserver
+      network: host
       args:
         - UID=${UID:-1000}
         - GID=${GID:-1001}

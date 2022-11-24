@@ -61,8 +61,17 @@ clean: clean_plotlablib set_env ## Clean plotlabserver docker images and delete 
 
 .PHONY: build_fast
 build_fast: set_env ## Build plotlabserver docker context only if it has not already been built. Will not attempt to rebuild.
-	[ -n $$(docker images -q ${PROJECT}_build:${TAG}) ] && make build
-	[ -n $$(docker images -q ${PROJECT}:${TAG}) ] && docker compose build ${PROJECT}
+	@if [ -n "$$(docker images -q ${PROJECT}_build:${TAG})" ]; then \
+        echo "Docker image: ${PROJECT}_build:${TAG} already build, skipping build."; \
+    else \
+        make build;\
+    fi
+
+	@if [ -n "$$(docker images -q ${PROJECT}:${TAG})" ]; then \
+        echo "Docker image: ${PROJECT}:${TAG} already build, skipping build."; \
+    else \
+        docker compose build;\
+    fi
 
 .PHONY: build
 build: set_env clean build_plotlablib

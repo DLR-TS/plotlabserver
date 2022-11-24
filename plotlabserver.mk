@@ -3,11 +3,8 @@
 #ifndef PLOTLABSERVER_MAKEFILE_PATH
 
 MAKEFLAGS += --no-print-directory
-
-.EXPORT_ALL_VARIABLES:
+.EXPORT_ALL_VARIABLES: 
 PLOTLABSERVER_PROJECT:=plotlabserver
-
-#plotlabserver_MAKEFILE_PATH:=$(shell realpath "$(lastword $(MAKEFILE_LIST))" | sed "s|/${plotlabserver_project}.mk||g")
 PLOTLABSERVER_MAKEFILE_PATH:= $(shell dirname "$(abspath "$(lastword $(MAKEFILE_LIST))")")
 MAKE_GADGETS_PATH:=${PLOTLABSERVER_MAKEFILE_PATH}/plotlablib/make_gadgets
 REPO_DIRECTORY:=${PLOTLABSERVER_MAKEFILE_PATH}
