@@ -93,8 +93,8 @@ stop_plotlabserver:
 .PHONY: start_plotlabserver 
 start_plotlabserver: stop_plotlabserver build_fast
 	mkdir -p .log
-	docker compose rm -f
-	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null; docker compose rm --force
+	pwd && docker compose rm -f
+	pwd && xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null; docker compose rm --force
 
 .PHONY: start_plotlabserver_detached 
 start_plotlabserver_detached: stop_plotlabserver build_fast
