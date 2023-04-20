@@ -31,5 +31,5 @@ services:
       - GID=${GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - .log:/var/log/plotlabserver
+      - ${PLOTLABSERVER_MAKEFILE_PATH}/.log:/var/log/plotlabserver
       
