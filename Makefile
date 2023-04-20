@@ -9,7 +9,12 @@ DOCKER_BUILDKIT?=1
 DOCKER_CONFIG?=
 
 
-$(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb)
+STB_DIRECTORY:=${ROOT_DIR}/stb
+STB_FILES := $(wildcard $(STB_DIRECTORY)/*)
+ifeq ($(STB_FILES),)
+    $(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb)
+endif
+
 
 include plotlabserver.mk
 
