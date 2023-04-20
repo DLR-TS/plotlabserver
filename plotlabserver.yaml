@@ -3,7 +3,7 @@ version: '3.5'
 services: 
   plotlabserver:
     privileged: true
-    image: plotlabserver:${PLOTLABSERVER_TAG:-latest}
+    image: plotlabserver:${PLOTLABSERVER_TAG}
     container_name: plotlabserver
     hostname: plotlabserver
     user: ${UID}:${GID}
@@ -12,9 +12,9 @@ services:
       dockerfile: Dockerfile.plotlabserver
       network: host
       args:
-        - UID=${UID:-1000}
-        - GID=${GID:-1001}
-        - PLOTLABSERVER_TAG=${PLOTLABSERVER_TAG:-latest}
+        - UID=${UID}
+        - GID=${GID}
+        - PLOTLABSERVER_TAG=${PLOTLABSERVER_TAG}
     network_mode: "host"
     ipc: "host"
     #entrypoint: sh -c 'xeyes'
@@ -31,5 +31,5 @@ services:
       - GID=${GID}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - .log:/var/log/plotlabserver
+      - ${PLOTLABSERVER_MAKEFILE_PATH}/.log:/var/log/plotlabserver
       

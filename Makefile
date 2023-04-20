@@ -24,7 +24,6 @@ GID := $(shell id -g)
 
 .DEFAULT_GOAL := help
 
-STB_DIRECTORY = "${ROOT_DIR}/stb"
 
 .PHONY: set_env 
 set_env: 

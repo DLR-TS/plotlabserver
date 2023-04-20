@@ -3,7 +3,7 @@ version: '3.5'
 services:
   plotlabserver:
     extends:
-      file: plotlabserver.yaml
+      file: ${PLOTLABSERVER_MAKEFILE_PATH}/plotlabserver.yaml
       service: plotlabserver
     environment:
       - DISPLAY_MODE=${DISPLAY_MODE:-native}
