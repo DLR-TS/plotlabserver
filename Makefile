@@ -71,6 +71,7 @@ build_fast: set_env ## Build plotlabserver docker context only if it has not alr
     else \
         docker compose build;\
     fi
+	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
 
 .PHONY: build
 build: set_env clean build_plotlablib
@@ -80,7 +81,6 @@ build: set_env clean build_plotlablib
                  --tag ${PROJECT}_build:${TAG} \
                  --build-arg PROJECT=${PROJECT} \
                  --build-arg PLOTLABLIB_TAG=${PLOTLABLIB_TAG} .
-	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
 
 .PHONY: stop_plotlabserver 
 stop_plotlabserver:
