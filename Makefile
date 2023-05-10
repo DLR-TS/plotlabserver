@@ -8,9 +8,14 @@ MAKEFLAGS += --no-print-directory
 DOCKER_BUILDKIT?=1
 DOCKER_CONFIG?=
 
-include plotlablib/make_gadgets/make_gadgets.mk
-include plotlablib/make_gadgets/docker/docker-tools.mk
-include plotlablib/plotlablib.mk
+
+STB_DIRECTORY:=${ROOT_DIR}/stb
+STB_FILES := $(wildcard $(STB_DIRECTORY)/*)
+ifeq ($(STB_FILES),)
+    $(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb)
+endif
+
+
 include plotlabserver.mk
 
 USER := $(shell whoami)
@@ -19,12 +24,6 @@ GID := $(shell id -g)
 
 .DEFAULT_GOAL := help
 
-STB_DIRECTORY = "${ROOT_DIR}/stb"
-
-$(STB_DIRECTORY):
-	@echo "ERROR: STB ${STB_DIRECTORY} does not exist."
-	@echo "  Did you clone or init the submodules?"
-	@exit 1
 
 .PHONY: set_env 
 set_env: 
@@ -72,6 +71,7 @@ build_fast: set_env ## Build plotlabserver docker context only if it has not alr
     else \
         docker compose build;\
     fi
+	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
 
 .PHONY: build
 build: set_env clean build_plotlablib
@@ -81,7 +81,6 @@ build: set_env clean build_plotlablib
                  --tag ${PROJECT}_build:${TAG} \
                  --build-arg PROJECT=${PROJECT} \
                  --build-arg PLOTLABLIB_TAG=${PLOTLABLIB_TAG} .
-	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
 
 .PHONY: stop_plotlabserver 
 stop_plotlabserver:
@@ -100,13 +99,6 @@ start_plotlabserver: stop_plotlabserver build_fast
 start_plotlabserver_detached: stop_plotlabserver build_fast
 	mkdir -p .log
 	xhost + 1> /dev/null && docker compose up --force-recreate -d &
-
-.PHONY: build_plotlabserver_compile 
-build_plotlabserver_compile:
-	@cd "${ROOT_DIR}/plotlabserver/include/plotlabserver" && \
-	ln -sf ../../../stb/stb_image.h stb_image.h
-	cd "${ROOT_DIR}/plotlabserver" && \
-	bash build.sh
 
 .PHONY: view_plotlab_server_logs 
 view_plotlabserver_logs: ## View plotlabserver logs in detached mode

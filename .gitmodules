@@ -6,3 +6,6 @@
 	path = plotlablib
 	url = git@github.com:DLR-TS/plotlablib.git
 	branch = master
+[submodule "make_gadgets"]
+	path = make_gadgets
+	url = git@github.com:DLR-TS/make_gadgets.git

@@ -4,3 +4,4 @@ libopengl0
 libglu1-mesa
 libcurl3-gnutls
 x11-apps
+libcurl4-gnutls-dev
