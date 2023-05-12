@@ -8,6 +8,7 @@ MAKEFLAGS += --no-print-directory
 DOCKER_BUILDKIT?=1
 DOCKER_CONFIG?=
 
+SUBMODULES_PATH?=${ROOT_DIR}
 
 STB_DIRECTORY:=${ROOT_DIR}/stb
 STB_FILES := $(wildcard $(STB_DIRECTORY)/*)
@@ -32,7 +33,7 @@ set_env:
 	$(eval DOCKERFILE := ${PLOTLABSERVER_BUILD_DOCKERFILE})
 
 .PHONY: all 
-all: clean build
+all: build
 
 .PHONY: up 
 up: ## Starts plotlabserver instance, interactive
@@ -74,13 +75,19 @@ build_fast: set_env ## Build plotlabserver docker context only if it has not alr
 	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
 
 .PHONY: build
-build: set_env clean build_plotlablib
+build: set_env build_plotlablib
 	rm -rf "${ROOT_DIR}/${PROJECT}/build"
 	docker build --network host \
                  -f ${DOCKERFILE} \
                  --tag ${PROJECT}_build:${TAG} \
                  --build-arg PROJECT=${PROJECT} \
                  --build-arg PLOTLABLIB_TAG=${PLOTLABLIB_TAG} .
+	docker cp $$(docker create --rm ${PROJECT}_build:${TAG}):/tmp/${PROJECT}/${PROJECT}/build "${ROOT_DIR}/${PROJECT}"
+
+.PHONY: docker_compose_build
+docker_compose_build:
+	docker compose build
+
 
 .PHONY: stop_plotlabserver 
 stop_plotlabserver:
@@ -104,3 +111,10 @@ start_plotlabserver_detached: stop_plotlabserver build_fast
 view_plotlabserver_logs: ## View plotlabserver logs in detached mode
 	docker compose logs -f plotlabserver
 
+.PHONY: test
+test:
+	bash .ci_pipeline test
+
+.PHONY: ci_pipeline 
+ci_pipeline:
+	bash .ci_pipeline

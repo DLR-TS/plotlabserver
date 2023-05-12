@@ -9,3 +9,7 @@ plotlablib/plotlablib/build
 **.log
 docker-compose.yaml
 **.dockerignore
+*.tests
+ci.env
+ci_pipeline
+.ci_pipeline
