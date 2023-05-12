@@ -1,1 +1,37 @@
 #Define module specific tests here
+
+
+plot_active_test(){
+    local action=test
+    local name="plot active test"
+    local description="starts the plotlab server and checks if the plotlabserver.log reports: 'plotting_active:0'"
+    local message=""
+    local exit_code=0
+    printf "\n"
+    printf "  Test: %s\n" "${name}"
+    printf "    Description: %s\n" "${description}"
+
+    rm -rf .log/plotlabserver.log
+
+    DISPLAY_MODE=headless make up > /dev/null 2>&1 &
+  
+    for i in {1..5}; do
+        sleep 1
+        if grep -q "plotting_active:0" .log/plotlabserver.log > /dev/null 2>&1; then
+            make down > /dev/null 2>&1
+            message="'plotting_active:0' found in .log/plotlabserver.log"
+            printf "    Message: %s\n" "${message}" 
+            status=$(bold $(green "PASSED")) 
+            printf "    Status: %s: %s\n" "${action}" "${status}" 
+            return 0
+        fi
+    done
+ 
+    make down > /dev/null 2>&1
+    message="'plotting_active:0' not found in .log/plotlabserver.log"
+    printf "    Message: %s\n" "${message}"
+    status=$(bold $(red "FAILED"))
+    printf "    Status: %s\n" "${status}"
+    return 1
+
+}
