@@ -16,6 +16,9 @@
 
 This project provides a docker context to build and run plotlabserver.
 
+## Build Status
+[![CI](https://github.com/DLR-TS/plotlabserver/actions/workflows/ci.yaml/badge.svg)](https://github.com/DLR-TS/plotlabserver/actions/workflows/ci.yaml)
+
 ## Requirements
 * docker
 * make
