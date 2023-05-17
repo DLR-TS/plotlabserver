@@ -3,6 +3,7 @@ SHELL:=/bin/bash
 ROOT_DIR:=$(shell dirname "$(realpath $(firstword $(MAKEFILE_LIST)))")
 MAKEFLAGS += --no-print-directory
 
+include plotlabserver.mk
 
 .EXPORT_ALL_VARIABLES:
 DOCKER_BUILDKIT?=1
@@ -10,14 +11,14 @@ DOCKER_CONFIG?=
 
 SUBMODULES_PATH?=${ROOT_DIR}
 
+include ${SUBMODULES_PATH}/ci_teststand/ci_teststand.mk
+
 STB_DIRECTORY:=${ROOT_DIR}/stb
 STB_FILES := $(wildcard $(STB_DIRECTORY)/*)
 ifeq ($(STB_FILES),)
     $(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb)
 endif
 
-
-include plotlabserver.mk
 
 USER := $(shell whoami)
 UID := $(shell id -u)
@@ -112,9 +113,5 @@ view_plotlabserver_logs: ## View plotlabserver logs in detached mode
 	docker compose logs -f plotlabserver
 
 .PHONY: test
-test:
-	bash .ci_pipeline test
+test: ci_test
 
-.PHONY: ci_pipeline 
-ci_pipeline:
-	bash .ci_pipeline

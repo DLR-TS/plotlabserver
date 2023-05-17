@@ -13,21 +13,18 @@ plot_active_test(){
 
     rm -rf .log/plotlabserver.log
 
-    DISPLAY_MODE=headless make up > /dev/null 2>&1 &
-  
-    for i in {1..5}; do
-        sleep 1
-        if grep -q "plotting_active:0" .log/plotlabserver.log > /dev/null 2>&1; then
-            make down > /dev/null 2>&1
-            message="'plotting_active:0' found in .log/plotlabserver.log"
-            printf "    Message: %s\n" "${message}" 
-            status=$(bold $(green "PASSED")) 
-            printf "    Status: %s: %s\n" "${action}" "${status}" 
-            return 0
-        fi
-    done
+    DISPLAY_MODE=headless make up-detached > /dev/null 2>&1
+    sleep 3s
+    if grep -q "plotting_active:0" .log/plotlabserver.log; then
+        make down > /dev/null 2>&1
+        message="'plotting_active:0' found in .log/plotlabserver.log"
+        printf "    Message: %s\n" "${message}" 
+        status=$(bold $(green "PASSED")) 
+        printf "    Status: %s: %s\n" "${action}" "${status}" 
+        return 0
+    fi
  
-    make down > /dev/null 2>&1
+    make down > /dev/null 2>&1 &
     message="'plotting_active:0' not found in .log/plotlabserver.log"
     printf "    Message: %s\n" "${message}"
     status=$(bold $(red "FAILED"))
