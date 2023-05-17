@@ -112,6 +112,9 @@ start_plotlabserver_detached: stop_plotlabserver build_fast
 view_plotlabserver_logs: ## View plotlabserver logs in detached mode
 	docker compose logs -f plotlabserver
 
+.PHONY: ci_build
+ci_build: build docker_compose_build
+
 .PHONY: test
 test: ci_test
 
