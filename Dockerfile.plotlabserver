@@ -1,5 +1,3 @@
-# syntax = edrevo/dockerfile-plus
-
 # This dockerfile contains the runtime context for plotlabserver
 #   with integration into x11 for graphical applications
 
@@ -25,7 +23,8 @@ ARG GID
 
 RUN useradd --create-home ${USER}
 
-INCLUDE+ Dockerfile.personalize.partial
+RUN usermod -u ${UID} ${USER} && groupmod -g ${GID} ${USER}
+RUN chown -r ${UID}:${GID} $$HOME | true
 
 ARG VIRTUAL_DISPLAY_RESOLUTION=800x600
 ENV VIRTUAL_DISPLAY_RESOLUTION=${VIRTUAL_DISPLAY_RESOLUTION}
