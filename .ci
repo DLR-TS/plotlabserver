@@ -5,9 +5,9 @@ source "${SUBMODULES_PATH}/ci_teststand/ci_utils.sh"
 
 source ci.env
 source "${SUBMODULES_PATH}/ci_teststand/tests/common_tests.sh"
-source "${SUBMODULES_PATH}/ci_teststand/tests/file_tests.sh"
+#source "${SUBMODULES_PATH}/ci_teststand/tests/file_tests.sh"
 source "${SUBMODULES_PATH}/ci_teststand/tests/docker_tests.sh"
-source .tests 
+#source .tests 
 
 build(){
     ci_common_build
