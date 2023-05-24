@@ -1,5 +1,20 @@
 #Define module specific tests here
 
+wait_for_file() {
+  local file="${1}"
+  local wait_time="${2}"
+  local start_time=$(date +%s)
+  while [ ! -f "${file}" ]; do
+    local current_time=$(date +%s)
+    local elapsed_time=$((current_time - start_time))
+
+    if [ "${elapsed_time}" -ge "${wait_time}" ]; then
+      echo "ERROR: Timeout exceeded. File '${file}' not found." >&2
+      return 1
+    fi
+    sleep 1
+  done
+}
 
 plot_active_test(){
     local action=test
@@ -14,7 +29,15 @@ plot_active_test(){
     rm -rf .log/plotlabserver.log
 
     DISPLAY_MODE=headless make up-detached > /dev/null 2>&1
-    sleep 3s
+    if ! wait_for_file ".log/plotlabserver.log" "10"; then
+        message="Log file: .log/plotlabserver.log not found"
+        printf "    Message: %s\n" "${message}" 
+        status=$(bold $(red "FAILED")) 
+        printf "    %-77s %s\n" "Status:" "${status}"
+        return 1
+    fi
+
+    sleep 2s
     if grep -q "plotting_active:0" .log/plotlabserver.log; then
         make down > /dev/null 2>&1
         message="'plotting_active:0' found in .log/plotlabserver.log"
