@@ -5,20 +5,23 @@ set -e
 function echoerr { echo "$@" >&2; exit 1;}
 SCRIPT_DIRECTORY="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
+echo "Plotlabserver plot recorder starting..."
+
+
 cd "${SCRIPT_DIRECTORY}" 
 
-PLOTLAB_SERVER_LOG=/var/log/plotlab/plotlabserver.log
+PLOTLAB_SERVER_LOG=/var/log/plotlabserver/plotlabserver.log
 
 FFMPEG_FRAMERATE=10
 FFMPEG_PROCESS_NAME="ffmpeg"
 FFMPEG_VIDEO_CODEC="libx264"
 FFMPEG_VIDEO_EXTENSION="mkv"
 FFMPEG_VIDEO_CONTAINER_FORMAT="matroska"
-FFMPEG_LOG_FILE="/var/log/plotlab/ffmpeg.log"
+FFMPEG_LOG_FILE="/var/log/plotlabserver/ffmpeg.log"
 DISPLAY="${VIRTUAL_DISPLAY_ID}"
 DISPLAY_RESOLUTION="${VIRTUAL_DISPLAY_RESOLUTION}"
 
-VIDEO_FILE="/var/log/plotlab/plotlab.${FFMPEG_VIDEO_EXTENSION}"
+VIDEO_FILE="/var/log/plotlabserver/plotlab.${FFMPEG_VIDEO_EXTENSION}"
 
 function shut_down_process(){
     local process_name="${1}"
@@ -64,7 +67,7 @@ function shut_down_process(){
 
 
 plotting_active_last_state="1"
-
+echo "DISPLAY_MODE: ${DISPLAY_MODE}"
 if [ "${DISPLAY_MODE}" == "native" ]; then
     echo -n "DISPLAY_MODE is \"${DISPLAY_MODE}\", plot video recording is only"
     echo    " available in 'window_manager' and 'headless' modes."
@@ -73,7 +76,8 @@ fi
 
 
 while true; do
-    plotting_active=$(tail -n 1 "${PLOTLAB_SERVER_LOG}" 2> /dev/null | cut -d: -f2|| true)
+    plotting_active="$(cat "${PLOTLAB_SERVER_LOG}" 2> /dev/null | sed -n '/plotting_active/p' | tail -n 1 | cut -d: -f2 || true)"
+    echo -n " Waiting for plotting active...${plotting_active}" 
     if [ "${plotting_active}" != "${plotting_active_last_state}" ]; then
         plotting_active_last_state="${plotting_active}"
         if [ "${plotting_active}" == "1" ]; then
