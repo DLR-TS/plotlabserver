@@ -77,7 +77,6 @@ fi
 
 while true; do
     plotting_active="$(cat "${PLOTLAB_SERVER_LOG}" 2> /dev/null | sed -n '/plotting_active/p' | tail -n 1 | cut -d: -f2 || true)"
-    echo -n " Waiting for plotting active...${plotting_active}" 
     if [ "${plotting_active}" != "${plotting_active_last_state}" ]; then
         plotting_active_last_state="${plotting_active}"
         if [ "${plotting_active}" == "1" ]; then
