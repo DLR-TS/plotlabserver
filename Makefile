@@ -16,7 +16,8 @@ include ${SUBMODULES_PATH}/ci_teststand/ci_teststand.mk
 STB_DIRECTORY:=${ROOT_DIR}/stb
 STB_FILES := $(wildcard $(STB_DIRECTORY)/*)
 ifeq ($(STB_FILES),)
-    $(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb)
+    $(shell git submodule update --init --recursive --remote --depth 1 --jobs 4 --single-branch ${ROOT_DIR}/stb || \
+            git submodule update --init --recursive --remote --depth 1 --jobs 4 ${ROOT_DIR}/stb)
 endif
 
 
