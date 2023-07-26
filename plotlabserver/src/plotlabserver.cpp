@@ -115,7 +115,10 @@ bool queryZMQInterface(ZMQObjectSink<PLComPaint> *m_paint,
       case PLComView::disable:
         Figure::getFigure(v->target)->setViewPortOffsets(0.0, 0.0, 0.0, 0.0,
                                                          true);
+        break;
     }
+    received_commands_in_this_run = true;
+    delete v;
   }
 
   while (m_other->has_data()) {
