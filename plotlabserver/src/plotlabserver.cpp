@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (C) 2017-2020 German Aerospace Center (DLR).
+ * Copyright (C) 2017-2023 German Aerospace Center (DLR).
  * Eclipse ADORe, Automated Driving Open Research https://eclipse.org/adore
  *
  * This program and the accompanying materials are made available under the
@@ -10,6 +10,7 @@
  *
  * Contributors:
  *   Daniel Heß - initial API and implementation
+ *   Matthias Nichting - minor fix of memory leak
  ********************************************************************************/
 
 #include <plotlablib/plcommands.h>
@@ -115,7 +116,10 @@ bool queryZMQInterface(ZMQObjectSink<PLComPaint> *m_paint,
       case PLComView::disable:
         Figure::getFigure(v->target)->setViewPortOffsets(0.0, 0.0, 0.0, 0.0,
                                                          true);
+        break;
     }
+    received_commands_in_this_run = true;
+    delete v;
   }
 
   while (m_other->has_data()) {
