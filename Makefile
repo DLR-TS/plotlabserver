@@ -101,13 +101,22 @@ stop_plotlabserver:
 .PHONY: start_plotlabserver 
 start_plotlabserver: stop_plotlabserver build_fast
 	mkdir -p .log
-	pwd && docker compose rm -f
-	pwd && xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null; docker compose rm --force
+	docker compose rm -f
+ifeq ($(DISPLAY_MODE),headless)
+	docker compose up --force-recreate plotlabserver; docker compose rm --force
+else
+	xhost + 1> /dev/null && docker compose up --force-recreate plotlabserver; xhost - 1> /dev/null; docker compose rm --force
+endif
+
 
 .PHONY: start_plotlabserver_detached 
 start_plotlabserver_detached: stop_plotlabserver build_fast
 	mkdir -p .log
+ifeq ($(DISPLAY_MODE),headless)
+	docker compose up --force-recreate -d &
+else
 	xhost + 1> /dev/null && docker compose up --force-recreate -d &
+endif
 
 .PHONY: view_plotlab_server_logs 
 view_plotlabserver_logs: ## View plotlabserver logs in detached mode
