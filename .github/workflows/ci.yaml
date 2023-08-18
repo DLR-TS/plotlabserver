@@ -46,5 +46,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: workspace
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 35000
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+ 
       - name: Test
         run: make load_docker_images && make ci_test
