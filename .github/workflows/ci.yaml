@@ -49,7 +49,7 @@ jobs:
       - name: Build
         run: |
           df -h
-          source adore.env && make build
+          make ci_build
       - name: Build ADORe CLI
         run: |
           df -h
