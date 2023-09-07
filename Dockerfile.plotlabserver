@@ -24,7 +24,7 @@ ARG GID
 RUN useradd --create-home ${USER}
 
 RUN usermod -u ${UID} ${USER} && groupmod -g ${GID} ${USER}
-RUN chown -r ${UID}:${GID} $$HOME | true
+RUN chown -R ${UID}:${GID} $$HOME | true
 
 ARG VIRTUAL_DISPLAY_RESOLUTION=800x600
 ENV VIRTUAL_DISPLAY_RESOLUTION=${VIRTUAL_DISPLAY_RESOLUTION}
