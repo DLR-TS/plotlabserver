@@ -97,3 +97,7 @@ recording to be overwritten.
 
 All build artifacts will be available at plotlabserver/build including the 
 plotlabserver binary.
+
+## STB
+
+stb should be hash: 5736b15
