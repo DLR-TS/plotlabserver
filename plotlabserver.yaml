@@ -22,7 +22,7 @@ services:
     #entrypoint: sh -c 'tail -f /dev/null'
     #entrypoint: sh -c 'glxgears'    
     environment:
-      - DISPLAY_MODE=${DISPLAY_MODE:-native}
+      #- DISPLAY_MODE=${DISPLAY_MODE:-native}
       # - DISPLAY_MODE=${DISPLAY_MODE:-window_manager}
       #- DISPLAY_MODE=${DISPLAY_MODE:-headless}
       - DISPLAY=${DISPLAY}
